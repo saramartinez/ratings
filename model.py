@@ -22,7 +22,7 @@ class Movie(Base):
 
     id = Column(Integer, primary_key= True)
     name = Column(String(64))
-    released_at= Column(DateTime)
+    release_date= Column(DateTime)
     imdb_url = Column(String(100))
 
 class Rating(Base):
