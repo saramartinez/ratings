@@ -1,6 +1,7 @@
 import model
 from model import User, Movie, Rating 
 import csv
+import datetime
 
 def load_users(session):
     with open('seed_data/u.user', 'rb') as user_file:
@@ -14,11 +15,14 @@ def load_movies(session):
     with open('seed_data/u.item', 'rb') as movie_file:
         reader = csv.reader(movie_file, delimiter='|')
         for row in reader:
-            title=row[1]
-            title=title.decode("latin-1")
+            title = row[1]
+            title = title.decode("latin-1")
             new_title = title[:-6]
-
-            movie = Movie(id=row[0], name=new_title, imdb_url=row[3])
+            if row[2] != '':
+                date = datetime.datetime.strptime(row[2], "%d-%b-%Y")
+            else:
+                date = None
+            movie = Movie(id=row[0], name=new_title, release_date=date, imdb_url=row[3])
             session.add(movie)
     session.commit()
 
