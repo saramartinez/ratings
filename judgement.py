@@ -9,7 +9,6 @@ app.secret_key = '\xf5!\x07!qj\xa4\x08\xc6\xf8\n\x8a\x95m\xe2\x04g\xbb\x98|U\xa2
 def index():
     return render_template("index.html")
 
-
 # Create a new user (sign up)
 @app.route("/signup", methods=['GET'])
 def show_signup():
@@ -33,36 +32,34 @@ def process_signup():
         flash("Your email address is already associated with an account. Please log in.")
         return redirect("/login")
 
-
 # Show if user is already logged in
 @app.route("/login", methods=['GET'])
 def show_login():
-    if "user" in session:
-        flash("You're already logged in! Start rating movies!")
-        return redirect('/')
+    if "user" not in session:
+        return render_template("login.html")
     else:
-        return render_template('login.html') 
+        flash("You're already logged in! Start rating movies!")
+        return redirect('/') 
 
 # Allow existing users to log in
 @app.route("/login", methods=['POST'])
 def process_login():
-    email = request.form.get('email')
-    password = request.form.get('password')
+    new_email = request.form.get('email')
+    new_password = request.form.get('password')
 
-    validate_email = model.validate_email(email)
+    existing_user = modelsession.query(User).filter(User.email==new_email).first()
 
-    if validate_email == None:
+    if existing_user == None:
         flash("No user with that email exists. Signup!")
         return render_template("signup.html")
     else:
-        if password != validate_email.password:
+        if new_password != existing_user.password:
             flash("Incorrect password. Please try again.")
             return render_template("login.html")
         else:
-            session['user'] = validate_email.id
+            session['user'] = existing_user.id
             flash("Successfully logged in. Start rating movies!")
             return redirect("/")
-
 
 # View a list of all users
 @app.route("/all-users")
