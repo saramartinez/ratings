@@ -18,11 +18,12 @@ def load_movies(session):
             title = row[1]
             title = title.decode("latin-1")
             new_title = title[:-6]
+            new_title = new_title.rstrip()
             if row[2] != '':
                 date = datetime.datetime.strptime(row[2], "%d-%b-%Y")
             else:
                 date = None
-            movie = Movie(id=row[0], name=new_title, release_date=date, imdb_url=row[3])
+            movie = Movie(id=row[0], title=new_title, release_date=date, imdb_url=row[3])
             session.add(movie)
     session.commit()
 
