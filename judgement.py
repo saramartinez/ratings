@@ -16,7 +16,7 @@ def create_user(email, password):
     u = model.session.query(model.User).filter(model.User.email==email)
     existing_user = u.one()
     if existing_user:
-        flash("You already have an account - please log in instead")
+        flash("Your email address is already associated with an account. Please log in.")
         redirect("login.html")
     else:
         #add to database
