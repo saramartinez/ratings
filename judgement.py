@@ -1,33 +1,49 @@
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, session, flash
 import model
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    user_list = model.session.query(model.User).limit(5).all()
-    return render_template("user_list.html", users=user_list)
+    return render_template("index.html")
 
 
 # Create a new user (sign up)
-@app.route("/signup")
-def create_user():
+@app.route("/sign-up")
+def create_user(email, password):
     # check if user in database & redirect to login
     # else create new user / add to database
-    pass
+    u = model.session.query(model.User).filter(model.User.email==email)
+    existing_user = u.one()
+    if existing_user:
+        flash("You already have an account - please log in instead")
+        redirect("login.html")
+    else:
+        #add to database
+        pass
 
 
 # Allow existing users to log in
-@app.route("/login")
+@app.route("/log-in")
 def log_in():
-    # query for username, password with .one() result
-    pass
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+    user = model.validate_user(email, password)
+
+    if 'user' not in session:
+        session['user'] = user.id
+
+    flash("Successfully logged in!")
+    return redirect("/all-users")
+
 
 # View a list of all users
 @app.route("/all-users")
 def list_all_users():
-    # same as current index
-    pass
+    user_list = model.session.query(model.User).limit(50).all()
+    return render_template("user_list.html", users=user_list)
 
 
 # Look at user's ratings
