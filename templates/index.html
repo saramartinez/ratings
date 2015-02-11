@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 {% block body %}
-<h2>Returning users, log in:</h2>
+<a href="/log-in">Log In</a><br><br><a href="/sign-up">Sign up</a>
+
+
+<!-- <h2>Returning users, log in:</h2>
 <form action="/log-in" method="POST">
     <label><input type="email" name="email" placeholder="Email Address" required autofocus /></label><br>
     <label><input type="password" name="password" placeholder="Password" required /></label><br>
     <label><input type="submit" value="Log In"></label>
 </form>
 
-<h2>New users, sign up:</h2>
+<h2>New to Judgemental Eye?</h2>
 <form action="/sign-up" method="POST">
     <label><input type="email" name="email" placeholder="Email Address" required autofocus /></label><br>
     <label><input type="password" name="password" placeholder="Password" required /></label><br>
     <label><input type="submit" value="Sign Up"></label>
-</form>
+</form> -->
 {% endblock %}
 

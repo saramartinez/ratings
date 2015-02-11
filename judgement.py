@@ -9,34 +9,79 @@ def index():
 
 
 # Create a new user (sign up)
-@app.route("/sign-up")
-def create_user(email, password):
-    # check if user in database & redirect to login
-    # else create new user / add to database
-    u = model.session.query(model.User).filter(model.User.email==email)
-    existing_user = u.one()
-    if existing_user:
-        flash("Your email address is already associated with an account. Please log in.")
-        redirect("login.html")
-    else:
-        #add to database
+@app.route("/sign-up", methods=['GET'])
+def sign_up():
+    if request.method == 'GET':
+        return render_template('signup.html')
+    if request.method == 'POST':
         pass
+# def create_user(email, password):
+#     # check if user in database & redirect to login
+#     # else create new user / add to database
+#     u = model.session.query(model.User).filter(model.User.email==email)
+#     existing_user = u.one()
+#     if existing_user:
+#         flash("Your email address is already associated with an account. Please log in.")
+#         redirect("login.html")
+#     else:
+#         #add to database
+#         pass
 
 
 # Allow existing users to log in
-@app.route("/log-in")
-def log_in():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
+@app.route("/login", methods=['GET'])
+def show_login():
 
-    user = model.validate_user(email, password)
+    if "user" in session:
+        flash("You're already logged in! Start rating movies!")
+        return redirect('/')
+    else:
+        return render_template('login.html') 
 
-    if 'user' not in session:
-        session['user'] = user.id
 
-    flash("Successfully logged in!")
-    return redirect("/all-users")
+@app.route("/login", methods=['POST'])
+def process_login():
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+    validate_email = model.validate_email(email)
+
+    if validate_email == None:
+        flash("No user with that email exists. Signup!")
+        return render_template("signup.html")
+    else:
+        if password != validate_email.password:
+            flash("Incorrect password. Please try again.")
+            return render_template("login.html")
+        else:
+            session['user'] = validate_email.id
+            flash("Successfully logged in. Start rating movies!")
+            return redirect("/")
+
+
+@app.route("/login", methods=["POST"])
+def process_login():
+    """TODO: Receive the user's login credentials located in the 'request.form'
+    dictionary, look up the user, and store them in the session."""
+
+    email= request.form.get("email")
+    password = request.form.get("password")
+    customer = model.get_customer_by_email(email)
+
+    if customer == None:
+        flash("No user with this email exists!")
+        return render_template("login.html")
+    else:
+        if password != customer.password:
+            flash("Incorrect password. Please try again.")
+            return render_template("login.html")
+        else:
+            session["user"]={"name":customer.name,"email":customer.email, "password":customer.password}
+            g.display = session["user"]["name"]
+            flash("Login successful!")
+            return redirect("/melons")
+
+
 
 
 # View a list of all users

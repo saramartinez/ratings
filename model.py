@@ -51,16 +51,14 @@ class Rating(Base):
         return "<Rating: id=%d, movie_id=%d, user_id=%d, rating=%d>" % (self.id, self.movie_id, self.user_id, self.rating)
 ### End class declarations
 
-def validate_user(email, password):
+def validate_email(email):
     e = email
-    p = password
-    u = session.query(User).filter(User.email==e, User.password==p)
-    existing_user = u.one()
-    if not existing_user:
-        return None
+    validate_email = session.query(User).filter(User.email==e)
+    existing_email = validate_email.one()
+    if existing_email:
+        return existing_email
     else:
-        return existing_user
-        
+        return None
 
 def main():
     """In case we need this for something"""
