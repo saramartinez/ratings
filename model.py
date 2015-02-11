@@ -3,9 +3,14 @@ from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship, backref, scoped_session
 
-ENGINE = None
-Session = None
+ENGINE = create_engine("sqlite:///ratings.db", echo=True)
+session = scoped_session(sessionmaker(bind=ENGINE,
+                                      autocommit = False,
+                                      autoflush = False))
+
 Base = declarative_base()
+Base.query = session.query_property()
+
 
 ### Class declarations go here
 class User(Base):
@@ -45,15 +50,6 @@ class Rating(Base):
     def __repr__(self):
         return "<Rating: id=%d, movie_id=%d, user_id=%d, rating=%d>" % (self.id, self.movie_id, self.user_id, self.rating)
 ### End class declarations
-
-def connect():
-    global ENGINE
-    global Session
-
-    ENGINE = create_engine("sqlite:///ratings.db", echo=True)
-    Session = sessionmaker(bind=ENGINE)
-
-    return Session()
 
 def main():
     """In case we need this for something"""
