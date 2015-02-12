@@ -1,7 +1,18 @@
 {% extends 'base.html' %}
 {% block body %}
 <h2><a href="{{ movie.imdb_url }}" target="_blank">{{ movie.title }}</a> ({{ movie.release_date.year }})</h2>
-<p></p>
+
+<h4>Your Rating: {{ user.rating }}</h4>
+<form action="/movies/<int:id>">
+            1 <input type="range" name="rating" min="1" max="5" step="1" value="rating" id="rating"> 5
+            <input type="submit" value="Update"> 
+
 
 
 {% endblock %}
+
+
+<form action="/cart">
+            <input type="text" name= "quantity" size="2" maxlength="2" value="{{qty}}">
+            <input type="hidden" name= "id" value="{{melon.id}}">
+            <input type="submit" value="Update"> 
