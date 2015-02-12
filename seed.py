@@ -23,7 +23,7 @@ def load_movies(session):
                 date = datetime.datetime.strptime(row[2], "%d-%b-%Y")
             else:
                 date = None
-            movie = Movie(id=row[0], title=new_title, release_date=date, imdb_url=row[3])
+            movie = Movie(id=row[0], title=new_title, release_date=date, imdb_url=row[4])
             session.add(movie)
     session.commit()
 

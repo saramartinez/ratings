@@ -51,7 +51,6 @@ class Rating(Base):
         return "<Rating: id=%d, movie_id=%d, user_id=%d, rating=%d>" % (self.id, self.movie_id, self.user_id, self.rating)
 ### End class declarations
 
-
 def main():
     """In case we need this for something"""
     pass

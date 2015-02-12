@@ -73,6 +73,15 @@ def list_user_ratings(id):
     ratings_list = modelsession.query(Rating).filter(Rating.user_id == id).all()
     return render_template("ratings_list.html", ratings = ratings_list, id = id)
 
+@app.route("/movies")
+def show_movies():
+    pass
+
+@app.route("/movies/<int:id>")
+def movie(id):
+    movie_info = modelsession.query(Movie).filter(Movie.id == id).first()
+    return render_template("movie_info.html", movie = movie_info)
+
 
 # Add or update personal ratings when viewing record of movie
 @app.route("/rate")
