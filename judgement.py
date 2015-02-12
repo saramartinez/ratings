@@ -78,12 +78,21 @@ def show_movies():
     movie_list = modelsession.query(Movie).limit(50).all()
     return render_template("movie_list.html", movies=movie_list)
 
-@app.route("/movies/<int:id>")
+@app.route("/movies/<int:id>", methods=["GET","POST"])
 def movie(id):
     movie_info = modelsession.query(Movie).filter(Movie.id == id).first()
 
+    new_rating = request.form.get('rating', None)
+
     if 'user' in session:
         rating = modelsession.query(Rating).filter(Rating.user_id == session['user'], Rating.movie_id == id).first()
+        if new_rating != None:
+            update_rating = Rating(user_id = session['user'], movie_id = movie_info.id, rating = new_rating)
+            modelsession.add(update_rating)
+            modelsession.commit()
+            flash("Your rating has been updated!")
+            return render_template("movie_info.html", movie = movie_info, rating=rating)
+
     else:
         rating = "You need to log in to utilize this feature!"
 
