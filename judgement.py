@@ -62,18 +62,16 @@ def process_login():
             return redirect("/")
 
 # View a list of all users
-@app.route("/all-users")
+@app.route("/users")
 def list_all_users():
-    user_list = model.session.query(model.User).limit(50).all()
+    user_list = modelsession.query(User).limit(50).all()
     return render_template("user_list.html", users=user_list)
 
-
 # Look at user's ratings
-@app.route("/user-ratings")
-def list_user_ratings():
-    # click on user
-    # view list of movies they've rated and the ratings
-    pass
+@app.route("/users/<int:id>")
+def list_user_ratings(id):
+    ratings_list = modelsession.query(Rating).filter(Rating.user_id == id).all()
+    return render_template("ratings_list.html", ratings = ratings_list, id = id)
 
 
 # Add or update personal ratings when viewing record of movie

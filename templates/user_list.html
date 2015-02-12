@@ -4,7 +4,7 @@
 <ul>
     First 50 users:
     {% for user in users %}
-    <li>User <strong>{{ user.id }}</strong>, age {{ user.age }}, has <strong>{{ user.ratings|length }} ratings</strong></li>
+    <li><a href="/users/{{user.id}}">User <strong>{{ user.id }}</strong></a>, age {{ user.age }}, has <strong>{{ user.ratings|length }} ratings</strong></li>
     {% endfor %}
 </ul>
 {% endblock %}
