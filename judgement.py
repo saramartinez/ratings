@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, request, session, flash
 from model import session as modelsession
 from model import User, Movie, Rating
 
+
 app = Flask(__name__)
 app.secret_key = '\xf5!\x07!qj\xa4\x08\xc6\xf8\n\x8a\x95m\xe2\x04g\xbb\x98|U\xa2f\x03'
 
@@ -82,30 +83,28 @@ def show_movies():
 def movie(id):
     movie_info = modelsession.query(Movie).filter(Movie.id == id).first()
 
-    new_rating = request.form.get('rating', None)
+    new_rating = request.form.get('new-rating', None)
+    update_rating = request.form.get('update-rating', None)
 
     if 'user' in session:
         rating = modelsession.query(Rating).filter(Rating.user_id == session['user'], Rating.movie_id == id).first()
+
         if new_rating != None:
-            update_rating = Rating(user_id = session['user'], movie_id = movie_info.id, rating = new_rating)
-            modelsession.add(update_rating)
-            modelsession.commit()
+            add_rating = Rating(user_id = session['user'], movie_id = movie_info.id, rating = new_rating)
+            modelsession.add(add_rating)
+            flash("Your rating has been added!")
+
+        if update_rating != None:
+            rating.rating = update_rating
             flash("Your rating has been updated!")
-            return render_template("movie_info.html", movie = movie_info, rating=rating)
+
+        modelsession.commit()
 
     else:
         rating = "You need to log in to utilize this feature!"
 
     return render_template("movie_info.html", movie = movie_info, rating=rating)
 
-
-# Add or update personal ratings when viewing record of movie
-@app.route("/rate")
-def update_rating():
-    # check if browser session exists for user
-    # if so, allow user to add a new rating or update an old rating
-    # make sure rating is actually attached to user's id in database
-    pass
 
 if __name__ == "__main__":
     app.run(debug = True)
