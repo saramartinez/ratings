@@ -75,12 +75,19 @@ def list_user_ratings(id):
 
 @app.route("/movies")
 def show_movies():
-    pass
+    movie_list = modelsession.query(Movie).limit(50).all()
+    return render_template("movie_list.html", movies=movie_list)
 
 @app.route("/movies/<int:id>")
 def movie(id):
     movie_info = modelsession.query(Movie).filter(Movie.id == id).first()
-    return render_template("movie_info.html", movie = movie_info)
+
+    if 'user' in session:
+        rating = modelsession.query(Rating).filter(Rating.user_id == session['user'], Rating.movie_id == id).first()
+    else:
+        rating = "You need to log in to utilize this feature!"
+
+    return render_template("movie_info.html", movie = movie_info, rating=rating)
 
 
 # Add or update personal ratings when viewing record of movie
