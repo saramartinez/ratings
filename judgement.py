@@ -1,7 +1,6 @@
-from flask import Flask, render_template, redirect, request, session, flash
+from flask import Flask, render_template, redirect, request, session, flash, url_for
 from model import session as modelsession
 from model import User, Movie, Rating
-
 
 app = Flask(__name__)
 app.secret_key = '\xf5!\x07!qj\xa4\x08\xc6\xf8\n\x8a\x95m\xe2\x04g\xbb\x98|U\xa2f\x03'
@@ -62,6 +61,11 @@ def process_login():
             flash("Successfully logged in. Start rating movies!")
             return redirect("/")
 
+@app.route("/logout")
+def logout():
+    session['user'] = {}
+    return redirect("/")
+
 # View a list of all users
 @app.route("/users")
 def list_all_users():
@@ -89,16 +93,19 @@ def movie(id):
     if 'user' in session:
         rating = modelsession.query(Rating).filter(Rating.user_id == session['user'], Rating.movie_id == id).first()
 
-        if new_rating != None:
-            add_rating = Rating(user_id = session['user'], movie_id = movie_info.id, rating = new_rating)
-            modelsession.add(add_rating)
-            flash("Your rating has been added!")
-
         if update_rating != None:
             rating.rating = update_rating
             flash("Your rating has been updated!")
 
+        if new_rating != None:
+            rating = Rating(user_id = session['user'], movie_id = movie_info.id, rating = new_rating)
+            modelsession.add(rating)
+            flash("Your rating has been added!")
+
         modelsession.commit()
+
+        if rating or new_rating:
+            modelsession.refresh(rating)
 
     else:
         rating = "You need to log in to utilize this feature!"

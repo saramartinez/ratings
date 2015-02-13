@@ -4,11 +4,16 @@
 </head>
 <body>
 <ul class="nav">
+{% if not session['user'] %}
 <li><a href="/login">Log In</a></li>
 <li><a href="/signup">Sign up</a></li>
+{% endif %}
 <li><a href="/users">Browse Users</a></li>
 <li><a href="/movies">Browse Movies</a></li>
-<li><a href="/profile">User Profile</a></li>
+{% if session['user'] %}
+<li><a href="/users/{{ session['user'] }}">User Profile</a></li>
+<li><a href="/logout">Log out</a></li>
+{% endif %}
 </ul>
 {% with messages = get_flashed_messages() %}
 {% if messages %}

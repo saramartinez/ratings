@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% block body %}
+{% if session['user'] == id %}
+<h2>My Ratings</h2>
+{% else %}
 <h2>User {{ id }}'s Ratings List</h2>
+{% endif %}
+{% if ratings %}
 <table>
     <tr>
         <th><strong>Movie Title</th>
@@ -13,5 +18,7 @@
         <td>{{ rating.rating }}</td>
     </tr>{% endfor %}
 </table>
+{% else %}
+<p>No movies rated</p>
+{% endif %}
 {% endblock %}
-
