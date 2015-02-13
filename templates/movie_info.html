@@ -3,13 +3,16 @@
 <h2><a href="{{ movie.imdb_url }}" target="_blank">{{ movie.title }}</a> ({{ movie.release_date.year }})</h2>
 {% if rating %}
 <h4>Your Rating: {{ rating.rating }}</h4>
-<form action="/movies/{{ movie.id }}" method="POST">
+<form action="/rate/{{ movie.id }}" method="POST">
             1 <label><input type="range" name="update-rating" min="1" max="5" step="1" value="{{ rating.rating }}" id="update-rating"></label> 5
             <input type="submit" value="Update"> 
 {% else %}
 <h4>Your rating: Unrated</h4>
-<form action="/movies/{{ movie.id }}" method="POST">
+<form action="/rate/{{ movie.id }}" method="POST">
             1 <label><input type="range" name="new-rating" min="1" max="5" step="1" value="{{ rating.rating }}" id="new-rating"></label> 5
             <input type="submit" value="Add"> 
+{% endif %}
+{% if prediction %}
+<h3>We predict you will rate this movie {{ prediction }}.</h3>
 {% endif %}
 {% endblock %}

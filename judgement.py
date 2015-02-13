@@ -84,9 +84,32 @@ def show_movies():
     return render_template("movie_list.html", movies=movie_list)
 
 @app.route("/movies/<int:id>", methods=["GET","POST"])
-def movie(id):
-    movie_info = modelsession.query(Movie).filter(Movie.id == id).first()
+def view_movie(id):
+    movie_info = modelsession.query(Movie).get(id)
+    ratings = movie_info.ratings
+    rating_nums = []
+    user_rating = None
 
+    for r in ratings:
+        if r.user_id == session['user']:
+            user_rating = r
+        rating_nums.append(r.rating)
+    avg_rating = float(sum(rating_nums))/len(rating_nums)
+
+    # Prediction code: only predict if the user hasn't rated it.
+    user = modelsession.query(User).get(session['user'])
+    prediction = None
+    if not user_rating:
+        prediction = user.predict_rating(movie_info)
+    # End prediction
+
+    return render_template("movie_info.html", movie=movie_info, 
+            average=avg_rating, rating=user_rating,
+            prediction=prediction)
+
+@app.route("/rate/<int:id>", methods=["GET", "POST"])
+def rate_movie(id):
+    movie_info = modelsession.query(Movie).get(id)
     new_rating = request.form.get('new-rating', None)
     update_rating = request.form.get('update-rating', None)
 
