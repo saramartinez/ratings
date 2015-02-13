@@ -2,6 +2,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship, backref, scoped_session
+import correlation
 
 ENGINE = create_engine("sqlite:///ratings.db", echo=True)
 session = scoped_session(sessionmaker(bind=ENGINE,

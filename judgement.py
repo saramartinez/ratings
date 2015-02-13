@@ -112,6 +112,17 @@ def movie(id):
 
     return render_template("movie_info.html", movie = movie_info, rating=rating)
 
+@app.route("/search")
+def search():
+    return render_template("search.html")
+
+@app.route("/search", methods=["POST"])
+def search_results():
+    query = request.form.get('query')
+    results = modelsession.query(Movie).filter(Movie.title.like("%" + query + "%")).limit(50).all()
+
+    return render_template("movie_list.html", movies=results)
+
 
 if __name__ == "__main__":
     app.run(debug = True)
